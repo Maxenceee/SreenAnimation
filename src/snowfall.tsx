@@ -21,7 +21,7 @@ export const Snowfall = () => {
 
 	const canDisplay = () => {
 		const now = Date.now();
-		return !isExpired && new Date("10-02-2025").getTime() > now;
+		return isExpired() && new Date("10-02-2025").getTime() > now;
 	}
 
 	const [display, setDisplay] = useState(canDisplay());

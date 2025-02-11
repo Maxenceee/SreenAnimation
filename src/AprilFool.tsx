@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTiming } from "./utils/useTiming";
 
 interface Fish {
@@ -29,12 +29,14 @@ const FishPaths: [Path2D, [number, number]][] = [
 ] as const;
 
 const FishColors: string[][] = [
-    ["#8CBBFE", "#7C84E8", "#8BBBFE", "#B2D7F4", "#B2D7F4", "#B3D8F4", "#B3D8F4", "#B2D7F4", "#094A60"], // Bleu
-    ["#FF8C8C", "#FF7C7C", "#FF8B8B", "#FFB2B2", "#FFB2B2", "#FFB3B3", "#FFB3B3", "#FFB2B2", "#FF0909"], // Rouge
-    ["#8CFF8C", "#7CFF7C", "#8BFF8B", "#B2FFB2", "#B2FFB2", "#B3FFB3", "#B3FFB3", "#B2FFB2", "#09FF09"], // Vert
-    ["#FF8CFF", "#FF7CFF", "#FF8BFF", "#FFB2FF", "#FFB2FF", "#FFB3FF", "#FFB3FF", "#FFB2FF", "#FF09FF"], // Rose
-    ["#FFB28C", "#FF9B7C", "#FFA58B", "#FFC2B2", "#FFC2B2", "#FFC3B3", "#FFC3B3", "#FFC2B2", "#FF4A09"], // Orange
-    ["#B28CFF", "#9B7CFF", "#A58BFF", "#C2B2FF", "#C2B2FF", "#C3B3FF", "#C3B3FF", "#C2B2FF", "#4A09FF"], // Violet
+	["#8CBBFE", "#7C84E8", "#8BBBFE", "#B2D7F4", "#B2D7F4", "#B3D8F4", "#B3D8F4", "#B2D7F4", "#094A60"], // Bleu
+	["#FF8C8C", "#FF7C7C", "#FF8B8B", "#FFB2B2", "#FFB2B2", "#FFB3B3", "#FFB3B3", "#FFB2B2", "#FF0909"], // Rouge
+	["#A3E4A3", "#99D799", "#8FC08F", "#85B985", "#7BB27B", "#71AB71", "#66A466", "#5CA05C", "#529952"], // Vert
+	["#FF8CFF", "#FF7CFF", "#FF8BFF", "#FFB2FF", "#FFB2FF", "#FFB3FF", "#FFB3FF", "#FFB2FF", "#FF09FF"], // Rose
+	["#FFB28C", "#FF9B7C", "#FFA58B", "#FFC2B2", "#FFC2B2", "#FFC3B3", "#FFC3B3", "#FFC2B2", "#FF4A09"], // Orange
+	["#B28CFF", "#9B7CFF", "#A58BFF", "#C2B2FF", "#C2B2FF", "#C3B3FF", "#C3B3FF", "#C2B2FF", "#4A09FF"], // Violet
+	["#FFE4B5", "#FFD700", "#FFC043", "#FFAA16", "#FF9933", "#FF885A", "#FF7781", "#FF66A9", "#FF55D1"], // Jaune
+	["#00FFFF", "#22EEEE", "#44DDDD", "#66CCCC", "#88BBBB", "#AAAABB", "#CC99BB", "#EE88BB", "#FF77BB"], // Cyan
 ];
 
 export const AprilFool = () => {
@@ -43,12 +45,13 @@ export const AprilFool = () => {
 
 	const canDisplay = () => {
 		const now = Date.now();
-		return !isExpired && new Date("04-01-2022").getTime() < now && new Date("04-02-2022").getTime() > now;
+		// return isExpired() && new Date("04-01-2022").getTime() < now && new Date("04-02-2022").getTime() > now;
+		return true;
 	}
 
 	const [display, setDisplay] = useState(canDisplay());
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-	const [generationActive, setGenerationActive] = useState(true);
+	const generationActive = useRef(true);
 	const fishesRef = useRef<Fish[]>([]);
 
 	useEffect(() => {
@@ -94,14 +97,14 @@ export const AprilFool = () => {
 			}
 
 			isOutOfScreen() {
-				return this.y < - this.size;
+				return this.y < -this.size;
 			}
 
 			draw(ctx: CanvasRenderingContext2D) {
 				ctx.save();
 				ctx.translate(this.x, this.y);
-				ctx.rotate(this.rotation);
 				ctx.scale(this.size / 300, this.size / 300);
+				ctx.rotate(this.rotation);
 
 				FishPaths.forEach(([path, [translateX, translateY]], index) => {
 					ctx.save();
@@ -116,15 +119,15 @@ export const AprilFool = () => {
 		}
 
 		const addFish = () => {
-			if (fishesRef.current.length < 250 && generationActive) {
+			if (fishesRef.current.length < 300 && generationActive) {
 				const randomStart = Math.random();
 				const startFromLeft = randomStart < 0.5;
 				const x = randomStart * canvas.width;
 				const y = canvas.height + 10; // Commencer en bas de l'écran
 				const size = Math.random() * 20 + 10;
-				const speedX = (startFromLeft ? 1 : -1) * (Math.random() * 2 + 3);
-				const speedY = Math.random() * 3 + 4;
-				const rotation = (startFromLeft ? Math.PI / 2 : 0) + (Math.random() - 0.5) * Math.PI / 8; // Pointer dans la direction souhaitée avec un peu de random
+				const speedX = (startFromLeft ? 1 : -1) * (Math.random() * 5 + 3);
+				const speedY = Math.random() * 5 + 3;
+				const rotation = (startFromLeft ? Math.PI / 2 : 0); // Pointer dans la direction souhaitée avec un peu de random
 				fishesRef.current.push(new FishClass(x, y, size, speedX, speedY, rotation));
 			}
 		};
@@ -136,30 +139,31 @@ export const AprilFool = () => {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 			fishesRef.current.forEach((fish, index) => {
-				fish.update();
-				fish.draw(ctx);
-
 				if (fish.isOutOfScreen(canvas.height)) {
 					fishesRef.current.splice(index, 1);
 				}
 			});
 
-			if (fishesRef.current.length > 0 || generationActive) {
+			fishesRef.current.forEach((fish) => {
+				fish.update();
+				fish.draw(ctx);
+			});
+
+			if (fishesRef.current.length > 0 || generationActive.current) {
 				anim = requestAnimationFrame(animate);
 			} else {
 				setDisplay(false);
 			}
 		};
 
-		addFish();
 		animate();
 
-		const generationInterval = setInterval(addFish, 50);
+		const generationInterval = setInterval(addFish, 10);
 
 		setTimeout(() => {
-			setGenerationActive(false);
+			generationActive.current = false;
 			clearInterval(generationInterval);
-		}, 5000);
+		}, 2000);
 
 		const handleResize = () => {
 			canvas.width = window.innerWidth;
@@ -172,7 +176,7 @@ export const AprilFool = () => {
 			clearInterval(generationInterval);
 			cancelAnimationFrame(anim);
 		};
-	}, [generationActive]);
+	}, []);
 
 	return display && <canvas ref={canvasRef} style={{ pointerEvents: "none", display: "block", position: "fixed", top: 0, left: 0, bottom: 0, right: 0, zIndex: 10000 }} />;
 };
