@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useTiming } from "./utils/useTiming";
+import { useTiming } from "../utils/useTiming";
 
 interface Fish {
 	x: number;
@@ -119,7 +119,7 @@ export const AprilFool = () => {
 		}
 
 		const addFish = () => {
-			if (fishesRef.current.length < 300 && generationActive) {
+			if (fishesRef.current.length < 300 && generationActive.current) {
 				const randomStart = Math.random();
 				const startFromLeft = randomStart < 0.5;
 				const x = randomStart * canvas.width;

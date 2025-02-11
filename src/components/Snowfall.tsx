@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useTiming } from "./utils/useTiming";
+import React, { useEffect, useRef, useState } from "react";
+import { useTiming } from "../utils/useTiming";
 
 interface Snowflake {
 	x: number;
@@ -21,12 +21,13 @@ export const Snowfall = () => {
 
 	const canDisplay = () => {
 		const now = Date.now();
-		return isExpired() && new Date("10-02-2025").getTime() > now;
+		// return isExpired() && new Date("10-02-2025").getTime() > now;
+		return true;
 	}
 
 	const [display, setDisplay] = useState(canDisplay());
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
-	const [generationActive, setGenerationActive] = useState(true);
+	const generationActive = useRef(true);
 	const snowflakesRef = useRef<Snowflake[]>([]);
 
 	useEffect(() => {
@@ -127,7 +128,7 @@ export const Snowfall = () => {
 		}
 
 		const addSnowflake = () => {
-			if (snowflakesRef.current.length < 200 && generationActive) {
+			if (snowflakesRef.current.length < 200 && generationActive.current) {
 				const x = Math.random() * canvas.width;
 				const y = -10;
 				const radius = Math.random() * 4 + 2;
@@ -152,7 +153,7 @@ export const Snowfall = () => {
 				}
 			});
 
-			if (snowflakesRef.current.length > 0 || generationActive) {
+			if (snowflakesRef.current.length > 0 || generationActive.current) {
 				anim = requestAnimationFrame(animate);
 			} else {
 				setDisplay(false);
@@ -164,7 +165,7 @@ export const Snowfall = () => {
 		const generationInterval = setInterval(addSnowflake, 50);
 
 		setTimeout(() => {
-			setGenerationActive(false);
+			generationActive.current = false;
 			clearInterval(generationInterval);
 		}, 5000);
 
@@ -179,7 +180,7 @@ export const Snowfall = () => {
 			clearInterval(generationInterval);
 			cancelAnimationFrame(anim);
 		};
-	}, [generationActive]);
+	}, []);
 
 	return display && <canvas ref={canvasRef} style={{ pointerEvents: "none", display: "block", position: "fixed", top: 0, left: 0, bottom: 0, right: 0, zIndex: 10000 }} />;
 };
