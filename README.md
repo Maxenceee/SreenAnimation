@@ -2,7 +2,7 @@
 
 ### Requirements
 
-You might need to install the following dependencies: `react-cookie`
+You might need to install the following dependencies: `react-cookie` and include the hook `useTiming` in your projet as well.
 
 The components are ready to use, you can just import them and that's all!
 
