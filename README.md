@@ -1,4 +1,4 @@
-# React Components of Screen animations
+# React Components for Screen animations
 
 ### Requirements
 
