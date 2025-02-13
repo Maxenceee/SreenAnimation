@@ -45,7 +45,7 @@ export const AprilFool = () => {
 
 	const canDisplay = () => {
 		const now = Date.now();
-		return isExpired() && new Date("04-01-2022").getTime() < now && new Date("04-02-2022").getTime() > now;
+		return isExpired() && new Date("04-01-2025").getTime() < now && new Date("04-02-2025").getTime() > now;
 	}
 
 	const [display, setDisplay] = useState(canDisplay());
