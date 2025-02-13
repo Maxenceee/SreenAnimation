@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useTiming } from "../utils/useTiming";
+import { useTiming } from "@src/utils/useTiming";
 
 interface Fish {
 	x: number;
@@ -37,7 +37,7 @@ const FishColors: string[][] = [
 	["#B28CFF", "#9B7CFF", "#A58BFF", "#C2B2FF", "#C2B2FF", "#C3B3FF", "#C3B3FF", "#C2B2FF", "#4A09FF"], // Violet
 	["#FFE4B5", "#FFD700", "#FFC043", "#FFAA16", "#FF9933", "#FF885A", "#FF7781", "#FF66A9", "#FF55D1"], // Jaune
 	["#4decec", "#1ecece", "#44DDDD", "#66CCCC", "#88BBBB", "#AAAABB", "#CC99BB", "#EE88BB", "#FF77BB"], // Cyan
-];
+] as const;
 
 export const AprilFool = () => {
 
@@ -45,8 +45,7 @@ export const AprilFool = () => {
 
 	const canDisplay = () => {
 		const now = Date.now();
-		// return isExpired() && new Date("04-01-2022").getTime() < now && new Date("04-02-2022").getTime() > now;
-		return true;
+		return isExpired() && new Date("04-01-2022").getTime() < now && new Date("04-02-2022").getTime() > now;
 	}
 
 	const [display, setDisplay] = useState(canDisplay());

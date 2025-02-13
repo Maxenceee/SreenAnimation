@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useTiming } from "../utils/useTiming";
+import { useTiming } from "@src/utils/useTiming";
 
 interface Snowflake {
 	x: number;
@@ -21,8 +21,7 @@ export const Snowfall = () => {
 
 	const canDisplay = () => {
 		const now = Date.now();
-		// return isExpired() && new Date("10-02-2025").getTime() > now;
-		return true;
+		return isExpired() && new Date("10-02-2025").getTime() > now;
 	}
 
 	const [display, setDisplay] = useState(canDisplay());
