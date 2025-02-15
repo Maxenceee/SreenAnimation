@@ -8,7 +8,7 @@ interface Snowflake {
 	speedX: number;
 	speedY: number;
 	rotation: number;
-    rotationSpeed: number;
+	rotationSpeed: number;
 	numBranches: number;
 
 	update: () => void;
